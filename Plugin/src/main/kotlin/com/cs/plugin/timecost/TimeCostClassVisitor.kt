@@ -29,6 +29,8 @@ class TimeCostClassVisitor(nextVisitor: ClassVisitor,val config: TimeCostConfig)
         }
         //从配置中读取tag
         val tag = config.logTag.get()
+        val pluginExecuteThreadName = Thread.currentThread().toString()
+        Thread.dumpStack()
         val newMethodVisitor =
             object : AdviceAdapter(Opcodes.ASM5, methodVisitor, access, name, descriptor) {
                 private var startTimeLocal = -1 // 保存 startTime 的局部变量索引
@@ -60,7 +62,7 @@ class TimeCostClassVisitor(nextVisitor: ClassVisitor,val config: TimeCostConfig)
                         "java/lang/StringBuilder"
                     );
                     mv.visitInsn(Opcodes.DUP);
-                    mv.visitLdcInsn("Method: $name, timecost: ");
+                    mv.visitLdcInsn("PluginThread: $pluginExecuteThreadName Method: $name, timecost: ");
                     mv.visitMethodInsn(
                         Opcodes.INVOKESPECIAL,
                         "java/lang/StringBuilder",

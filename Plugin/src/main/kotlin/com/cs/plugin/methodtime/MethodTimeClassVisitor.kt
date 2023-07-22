@@ -30,6 +30,8 @@ class MethodTimeClassVisitor(nextVisitor: ClassVisitor) : ClassVisitor(
         }
         //从配置中读取tag
         val tag = PluginHelper.extension?.logTag ?: "cs"
+        val pluginExecuteThreadName = Thread.currentThread().toString()
+        Thread.dumpStack()
         val newMethodVisitor =
             object : AdviceAdapter(Opcodes.ASM5, methodVisitor, access, name, descriptor) {
                 private var startTimeLocal = -1 // 保存 startTime 的局部变量索引
@@ -61,7 +63,7 @@ class MethodTimeClassVisitor(nextVisitor: ClassVisitor) : ClassVisitor(
                         "java/lang/StringBuilder"
                     );
                     mv.visitInsn(Opcodes.DUP);
-                    mv.visitLdcInsn("Method: $name, methodTime: ");
+                    mv.visitLdcInsn("PluginThread: $pluginExecuteThreadName Method: $name, methodTime: ");
                     mv.visitMethodInsn(
                         Opcodes.INVOKESPECIAL,
                         "java/lang/StringBuilder",
